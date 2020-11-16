@@ -49,6 +49,10 @@ if __name__ == "__main__":
     print(f'Randomising the groups of {groupSize}...', end='')
     # Do the thing...
     print('OK')
+
+    print(f'Writing results to file...', end='')
+    # Do the thing...
+    print('OK')
     
     print('Done.\n')
     
