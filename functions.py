@@ -5,7 +5,6 @@ def read_list_from_csv(fname, start=1):
     with open(fname, 'r') as f:
         lines = f.readlines()
     
-    print(lines[start:])
     out = []
     for line in lines[start:]:
         content = line.split(',')
@@ -60,3 +59,12 @@ def save_to_csv(fname, groups):
         for i, group in zip(range(n), groups):
             names = ', '.join(group)
             w.write(f'Group {i + 1}, {names} \n')
+
+####################################
+def main(dataFile, groupFile, groupSize, allowLess, start=1):
+    
+    names = read_list_from_csv(dataFile, start=start)
+    groups = create_random_groups(names, group_size=groupSize, allow_less=allowLess)
+    save_to_csv(groupFile, groups)
+
+    
