@@ -2,14 +2,15 @@ import os
 import random
 
 ####################################
-def read_list_from_csv(fname):
+def read_list_from_csv(fname, start=1):
     with open(fname, 'r') as f:
         lines = f.readlines()
     
+    print(lines[start:])
     out = []
-    for line in lines:
+    for line in lines[start:]:
         content = line.split(',')
-        out.append(content[0])
+        out.append(content[0].strip())
     
     return out
 
@@ -18,7 +19,7 @@ def create_random_groups(names, group_size=2, allow_less=False):
     n = len(names)
     groups = []
 
-    while n > group_size:
+    while n >= group_size:
         group = []
         for i in range(group_size):
             name = random.choice(names)
@@ -39,19 +40,46 @@ def create_random_groups(names, group_size=2, allow_less=False):
     return groups
 
 ####################################
+def show_one_group(group, id):
+    print(f'Group {id}')
+    print('------------')
+    for item in group:
+        print(f'{item} ', end='')
+    print('')
+
+####################################
+def show_all_groups(groups):
+    print('+++++++++++++++++++++++++++++++++')
+    for i, group in zip(range(len(groups)), groups):
+        show_one_group(group, i)
+    print('_________________________________')
+
+####################################
+def save_to_csv(fname, groups):
+    n = len(groups)
+    with open(fname, 'w') as w:
+        for i, group in zip(range(n), groups):
+            names = ', '.join(group)
+            w.write(f'Group {i + 1}, {names} \n')
+
+####################################
 if __name__ == "__main__":
     print('')
-    groupSize = 3
+    groupSize = 2
+    dataFile = "./data/namelist.csv"
+    groupFile = "./data/groups.csv"
+    
     print('Reading list of names...', end='')
-    # Do it
+    names = read_list_from_csv(dataFile)
     print('OK')
 
     print(f'Randomising the groups of {groupSize}...', end='')
-    # Do the thing...
+    groups = create_random_groups(names, group_size=groupSize)
     print('OK')
 
     print(f'Writing results to file...', end='')
-    # Do the thing...
+    # show_all_groups(groups)
+    save_to_csv(groupFile, groups)
     print('OK')
     
     print('Done.\n')
