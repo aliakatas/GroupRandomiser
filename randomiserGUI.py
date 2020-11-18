@@ -45,11 +45,14 @@ class Randomiser(QWidget):
         self.sizeOfGroupEntry = QLineEdit()
         self.sizeOfGroupEntry.setText('2')
         self.allowLessInGroupOpt = QCheckBox('Allow less in group')
+        self.hasHeader = QCheckBox('Has Header')
+        self.hasHeader.setChecked(True)
 
         # Upper block
         openLayout.addWidget(QLabel('Name list:'))
         openLayout.addWidget(self.openFileEntry)
         openLayout.addWidget(browseOpenButton)
+        openLayout.addWidget(self.hasHeader)
         openFileWidget.setLayout(openLayout)
         openFileWidget.show()
 
@@ -136,9 +139,13 @@ class Randomiser(QWidget):
 
         groupSize = int(groupSizeRaw)
         allowLess = self.allowLessInGroupOpt.isChecked()
-        
+        hasHeader = self.hasHeader.isChecked()
+        startRow = 0
+        if hasHeader:
+            startRow = 1
+
         # Do the work
-        fns.main(dataFile, groupFile, groupSize, allowLess, start=1)
+        fns.main(dataFile, groupFile, groupSize, allowLess, start=startRow)
         fname = os.path.split(groupFile)
         now = datetime.datetime.now()
         
