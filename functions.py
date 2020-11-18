@@ -17,6 +17,9 @@ def create_random_groups(names, group_size=2, allow_less=False):
     n = len(names)
     groups = []
 
+    if group_size > n:
+        return groups
+
     while n >= group_size:
         group = []
         for i in range(group_size):
@@ -65,6 +68,9 @@ def main(dataFile, groupFile, groupSize, allowLess, start=1):
     
     names = read_list_from_csv(dataFile, start=start)
     groups = create_random_groups(names, group_size=groupSize, allow_less=allowLess)
+    if not groups:
+        return False
     save_to_csv(groupFile, groups)
+    return True
 
     

@@ -145,7 +145,15 @@ class Randomiser(QWidget):
             startRow = 1
 
         # Do the work
-        fns.main(dataFile, groupFile, groupSize, allowLess, start=startRow)
+        ok = fns.main(dataFile, groupFile, groupSize, allowLess, start=startRow)
+        if not ok:
+            msg.setIcon(QMessageBox.Critical)
+            msg.setText('Operation failed!')
+            msg.setWindowTitle('Failed')
+            msg.setDetailedText('Reason: Group size grater than input size.')
+            msg.exec_()
+            return 
+
         fname = os.path.split(groupFile)
         now = datetime.datetime.now()
         
