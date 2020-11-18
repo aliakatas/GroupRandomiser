@@ -1,4 +1,5 @@
 import random
+import datetime
 
 ####################################
 def read_list_from_csv(fname, start=1):
@@ -62,6 +63,9 @@ def save_to_csv(fname, groups):
         for i, group in zip(range(n), groups):
             names = ', '.join(group)
             w.write(f'Group {i + 1}, {names} \n')
+
+        now = datetime.datetime.now()
+        w.write(f' , \nCreated by GroupRandomiser @ {now.strftime("%Y-%m-%d %H:%M:%S")}\n')
 
 ####################################
 def main(dataFile, groupFile, groupSize, allowLess, start=1):
