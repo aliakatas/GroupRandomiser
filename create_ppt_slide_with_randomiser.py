@@ -1,7 +1,10 @@
 import tkinter as tk
-from tkinter import ttk
+from tkinter import ttk, filedialog
 import random
 from pptx import Presentation
+
+groups = list()
+slide_txt = ""
 
 ####################################
 def append_to_powerpoint(pptx_file, txt, mod_pptx_file=None):
@@ -44,10 +47,8 @@ def create_random_groups(n, group_size, allow_less=False):
     if allow_less:
         groups.append(names)
     else:
-        n_rem = len(names)
-        for i in range(n_rem):
-            group = random.choice(groups)
-            group.append(names[i])
+        for i, name in enumerate(names):
+            groups[i].append(name)
     
     return groups
 
@@ -57,6 +58,12 @@ def calculate_results():
     num_of_students_val = num_of_students.get()
     num_students_group_val = num_students_group.get()
     allow_less_in_group_val = allow_less_in_group.get()
+
+    if not (num_of_students_val.isnumeric() and num_students_group_val.isnumeric()):
+        result_table.delete(*result_table.get_children())  # Clear existing rows
+        result_table.insert("", "end", values=("Please enter values for", "Number of students"))
+        result_table.insert("", "end", values=("Please enter values for", "Number of students in group"))
+        return
 
     # Convert input values to float (you can add error handling)
     num_of_students_val = int(num_of_students_val)
@@ -70,12 +77,25 @@ def calculate_results():
     result_table.delete(*result_table.get_children())  # Clear existing rows
     slide_txt = ""
     for idx, group in enumerate(groups):
-        result_table.insert("", "end", values=(f"Group {idx + 1} ({len(group)})", group))
-        slide_txt += f"Group {idx + 1} ({len(group)}) \t\t {group}"
+        result_table.insert("", "end", values=(f"Group {idx + 1} ({len(group)})", ", ".join(group)))
+        slide_txt += f"Group {idx + 1} ({len(group)}) \t\t {'', ''.join(group)}\n"
 
 ####################################
 def save():
-    pass 
+    file_path = file_path_entry.get()
+    if file_path:
+        if len(slide_txt) > 0:
+            append_to_powerpoint(file_path, slide_txt)
+    else:
+        result_table.delete(*result_table.get_children())  # Clear existing rows
+        result_table.insert("", "end", values=(f"Output file:", "Not selected!"))
+
+# Function to open a file dialog and set the file path
+def browse_file():
+    file_path = filedialog.askopenfilename()
+    if file_path:
+        file_path_entry.delete(0, tk.END)  # Clear the entry field
+        file_path_entry.insert(0, file_path)  # Insert the selected file path
 
 # Create the main application window
 root = tk.Tk()
@@ -100,6 +120,17 @@ checkbox.pack()
 # Create a button to trigger the calculation
 calculate_button = tk.Button(root, text="Calculate", command=calculate_results)
 calculate_button.pack()
+
+# Create a label and entry field for the file path
+file_path_label = tk.Label(root, text="File Path:")
+file_path_label.pack()
+
+file_path_entry = tk.Entry(root)
+file_path_entry.pack()
+
+# Create a button to open the file dialog
+browse_button = tk.Button(root, text="Browse", command=browse_file)
+browse_button.pack()
 
 # Create a button to trigger saving
 save_button = tk.Button(root, text="Save", command=save)
